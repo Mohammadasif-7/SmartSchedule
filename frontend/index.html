@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>SmartSched AI</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="layout">
+<aside>
+  <div class="logo">Smart<span>Sched</span> AI<small>PS2605 • VALKARITH</small></div>
+  <nav>
+    <button class="active" data-page="dashboard">🏠 Dashboard</button>
+    <button data-page="timetable">📅 Timetable</button>
+    <button data-page="resources">👥 Resources</button>
+    <button data-page="rules">⚙ Rules & Availability</button>
+    <button data-page="analytics">📊 Analytics</button>
+    <button data-page="whatif">🪄 What-if Simulation</button>
+  </nav>
+</aside>
+<main>
+<header><div><b>Intelligent Timetable Management</b><small>Automatic • Conflict-aware • AI Assisted</small></div><span class="badge">ADMIN</span></header>
+<section id="app"></section>
+</main>
+</div>
+
+<button class="ai-fab" id="aiOpen">🤖 AI Assistant</button>
+<div class="ai-panel hidden" id="aiPanel">
+  <div class="ai-head"><b>🤖 AI Scheduling Assistant</b><button id="aiClose">×</button></div>
+  <div class="ai-body" id="aiBody"><div class="bubble">Hi! Ask me about conflicts, faculty workload, rooms, timetable generation or what-if scenarios.</div></div>
+  <div class="ai-input"><input id="aiInput" placeholder="Ask something..."><button id="aiSend">➤</button></div>
+</div>
+<div id="toast"></div>
+<script src="app.js"></script>
+</body>
+</html>
