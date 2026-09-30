@@ -1,37 +1,470 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>SmartSched AI</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Government Engineering College Madhubani — AI-Driven Intelligent Timetable Management System</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="images/college_logo.png" type="image/png">
 </head>
 <body>
-<div class="layout">
-<aside>
-  <div class="logo">Smart<span>Sched</span> AI<small>PS2605 • VALKARITH</small></div>
-  <nav>
-    <button class="active" data-page="dashboard">🏠 Dashboard</button>
-    <button data-page="timetable">📅 Timetable</button>
-    <button data-page="resources">👥 Resources</button>
-    <button data-page="rules">⚙ Rules & Availability</button>
-    <button data-page="analytics">📊 Analytics</button>
-    <button data-page="whatif">🪄 What-if Simulation</button>
-  </nav>
-</aside>
-<main>
-<header><div><b>Intelligent Timetable Management</b><small>Automatic • Conflict-aware • AI Assisted</small></div><span class="badge">ADMIN</span></header>
-<section id="app"></section>
-</main>
-</div>
 
-<button class="ai-fab" id="aiOpen">🤖 AI Assistant</button>
-<div class="ai-panel hidden" id="aiPanel">
-  <div class="ai-head"><b>🤖 AI Scheduling Assistant</b><button id="aiClose">×</button></div>
-  <div class="ai-body" id="aiBody"><div class="bubble">Hi! Ask me about conflicts, faculty workload, rooms, timetable generation or what-if scenarios.</div></div>
-  <div class="ai-input"><input id="aiInput" placeholder="Ask something..."><button id="aiSend">➤</button></div>
-</div>
-<div id="toast"></div>
-<script src="app.js"></script>
+  <!-- ========================================================
+       TOP COLLEGE BRANDING BANNER (Government of Bihar & GEC Madhubani)
+       ======================================================== -->
+  <header class="college-top-banner">
+    <div class="college-banner-inner">
+      <a href="javascript:void(0)" class="college-brand-left" onclick="navigate('home')">
+        <img src="images/college_logo.png" alt="Government Engineering College Madhubani Logo" class="college-logo-img">
+        <div class="college-titles">
+          <h1>Government Engineering College Madhubani</h1>
+          <div class="college-sub">( Science, Technology & Technical Education, Govt. Of Bihar )</div>
+        </div>
+      </a>
+
+      <div class="college-banner-right">
+        <!-- Accessibility Bar -->
+        <div class="accessibility-bar">
+          <div class="font-size-ctrls">
+            <span>Font Size:</span>
+            <button class="font-btn" onclick="setFontSize('lg')" title="Increase Font Size">A+</button>
+            <button class="font-btn" onclick="setFontSize('normal')" title="Normal Font Size">A</button>
+            <button class="font-btn" onclick="setFontSize('sm')" title="Decrease Font Size">A-</button>
+          </div>
+          <div class="color-dots">
+            <span>Color Scheme:</span>
+            <div class="color-dot blue" onclick="setColorTheme('blue')" title="Blue Theme"></div>
+            <div class="color-dot green" onclick="setColorTheme('green')" title="Green Theme"></div>
+            <div class="color-dot purple" onclick="setColorTheme('purple')" title="Purple Theme"></div>
+            <div class="color-dot amber" onclick="setColorTheme('amber')" title="Amber Theme"></div>
+          </div>
+        </div>
+
+        <!-- Government of Bihar State Emblem -->
+        <img src="images/bihar_emblem.png" alt="Government of Bihar Emblem" class="bihar-emblem-img">
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================================
+       STICKY MAIN NAVIGATION BAR
+       ======================================================== -->
+  <nav class="main-navbar">
+    <div class="navbar-inner">
+      <ul class="nav-links" id="mainNavLinks">
+        <li>
+          <button class="nav-item-btn active" data-nav="home" onclick="navigate('home')">
+            <span class="icon">🏠</span> Home
+          </button>
+        </li>
+        <li>
+          <button class="nav-item-btn" data-nav="dashboard" onclick="navigate('dashboard')">
+            <span class="icon">🗂️</span> Dashboard
+          </button>
+        </li>
+        <li>
+          <button class="nav-item-btn" data-nav="timetable" onclick="navigate('timetable')">
+            <span class="icon">📅</span> Timetable
+          </button>
+        </li>
+        <li>
+          <button class="nav-item-btn" data-nav="faculty" onclick="navigate('faculty')">
+            <span class="icon">👥</span> Faculty
+          </button>
+        </li>
+        <li>
+          <button class="nav-item-btn" data-nav="subjects" onclick="navigate('subjects')">
+            <span class="icon">📖</span> Subjects
+          </button>
+        </li>
+        <li>
+          <button class="nav-item-btn" data-nav="rooms" onclick="navigate('rooms')">
+            <span class="icon">🏛️</span> Rooms/Labs
+          </button>
+        </li>
+        <li>
+          <button class="nav-item-btn" data-nav="ai" onclick="openAiAssistant()">
+            <span class="icon">🤖</span> AI Assistant
+          </button>
+        </li>
+        <li>
+          <button class="nav-item-btn" data-nav="resources" onclick="navigate('resources')">
+            <span class="icon">📑</span> Resources
+          </button>
+        </li>
+      </ul>
+
+      <!-- Mobile Hamburger Button -->
+      <button class="mobile-hamburger" id="navToggleBtn" onclick="toggleMobileNav()" aria-label="Toggle Navigation">
+        ☰
+      </button>
+
+      <!-- Right Side Auth Buttons (Login & Sign Up) -->
+      <div class="nav-auth-group">
+        <div id="unauthButtons" style="display:flex; align-items:center; gap:8px;">
+          <button class="nav-login-btn" onclick="openAuthModal('login')">
+            <span>➡️</span> Login
+          </button>
+          <button class="nav-signup-btn" onclick="openAuthModal('register')">
+            Sign Up
+          </button>
+        </div>
+
+        <div id="authProfileGroup" style="display:none; align-items:center; gap:8px;">
+          <div class="user-profile-badge" onclick="openAuthModal('login')" title="Account settings">
+            <div class="user-avatar" id="headerAvatar">A</div>
+            <div class="user-info">
+              <span class="user-name" id="headerUserName">Admin</span>
+              <span class="role-pill admin" id="headerUserRole">ADMIN</span>
+            </div>
+          </div>
+          <button class="btn btn-sm btn-secondary" onclick="logout()" title="Logout">Logout</button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ========================================================
+       DYNAMIC APP VIEW MOUNT POINT
+       ======================================================== -->
+  <main id="app">
+    <!-- Rendered dynamically by app.js: Homepage or Management Views -->
+  </main>
+
+  <!-- ========================================================
+       FLOATING AI ASSISTANT WIDGET
+       ======================================================== -->
+  <button class="ai-fab" id="aiOpenBtn" onclick="openAiAssistant()">
+    <span>🤖</span> AI Assistant
+  </button>
+
+  <div class="ai-drawer hidden" id="aiDrawer">
+    <div class="ai-drawer-header">
+      <b><span>🤖</span> SmartSched AI Assistant</b>
+      <button class="ai-close-btn" id="aiCloseBtn" onclick="closeAiAssistant()">×</button>
+    </div>
+    <div class="ai-messages-container" id="aiMessages">
+      <div class="ai-bubble assistant">
+        👋 Hello! I am your AI Timetable Assistant for <b>Government Engineering College Madhubani</b>. Ask me about conflict checks, faculty workload, room utilization, or how the CP-SAT scheduling algorithm works!
+      </div>
+    </div>
+    <div class="ai-prompt-chips">
+      <button class="chip-btn" onclick="sendAiPrompt('Check conflicts')">⚠️ Check conflicts</button>
+      <button class="chip-btn" onclick="sendAiPrompt('Faculty workload')">👨‍🏫 Faculty workload</button>
+      <button class="chip-btn" onclick="sendAiPrompt('Room utilization')">🚪 Room utilization</button>
+      <button class="chip-btn" onclick="sendAiPrompt('Sections overview')">📚 Sections</button>
+      <button class="chip-btn" onclick="sendAiPrompt('How does the AI generator work?')">⚙️ Solver rules</button>
+    </div>
+    <div class="ai-input-bar">
+      <input type="text" id="aiInput" placeholder="Ask AI assistant...">
+      <button id="aiSendBtn" onclick="sendAiMessage()">➤</button>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast"></div>
+
+  <!-- ========================================================
+       MODALS
+       ======================================================== -->
+
+  <!-- Auth Modal (Sign In & Sign Up) -->
+  <div class="modal-overlay" id="authModal">
+    <div class="modal-content" style="max-width: 440px;">
+      <div class="modal-header">
+        <h3 id="authModalTitle">Sign In to SmartSched</h3>
+        <button class="modal-close-btn" onclick="closeModal('authModal')">×</button>
+      </div>
+      <div class="modal-body">
+        <div style="display:flex; border-bottom:1px solid #e2e8f0; margin-bottom:16px;">
+          <button id="authTabLogin" class="btn" style="flex:1; border-radius:0; border-bottom:2px solid var(--royal-blue); font-weight:700;" onclick="switchAuthTab('login')">Sign In</button>
+          <button id="authTabRegister" class="btn" style="flex:1; border-radius:0; border-bottom:2px solid transparent; color:#64748b;" onclick="switchAuthTab('register')">Sign Up</button>
+        </div>
+
+        <form id="authForm" onsubmit="handleAuthSubmit(event)">
+          <!-- Register Only Fields -->
+          <div id="registerFields" style="display:none;">
+            <div class="form-group">
+              <label>Full Name</label>
+              <input type="text" id="authFullName" class="form-control" placeholder="e.g. Prof. R. K. Sharma">
+            </div>
+            <div class="form-group">
+              <label>Email Address</label>
+              <input type="email" id="authEmail" class="form-control" placeholder="name@gecmadhubani.ac.in">
+            </div>
+            <div class="form-group">
+              <label>User Role</label>
+              <select id="authRole" class="form-control">
+                <option value="student">Student</option>
+                <option value="teacher">Teacher / Faculty</option>
+                <option value="admin">Administrator</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Username</label>
+            <input type="text" id="authUsername" class="form-control" placeholder="Enter username" required>
+          </div>
+          <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="authPassword" class="form-control" placeholder="Enter password" required>
+          </div>
+
+          <div style="display:flex; justify-content:space-between; align-items:center; margin:14px 0;">
+            <div style="font-size:12px; color:#64748b;" id="authHint">Default admin: <b>admin / admin123</b></div>
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="width:100%; padding:11px;" id="authSubmitBtn">Sign In</button>
+        </form>
+
+        <div style="margin-top:16px; padding-top:14px; border-top:1px solid #f1f5f9; text-align:center;">
+          <small style="color:#64748b; font-size:11.5px;">Quick 1-Click Demo Logins:</small>
+          <div style="display:flex; gap:6px; justify-content:center; margin-top:8px;">
+            <button class="btn btn-sm btn-secondary" onclick="quickLogin('admin')">Admin</button>
+            <button class="btn btn-sm btn-secondary" onclick="quickLogin('teacher')">Teacher</button>
+            <button class="btn btn-sm btn-secondary" onclick="quickLogin('student')">Student</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Faculty Modal -->
+  <div class="modal-overlay" id="facultyModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="facultyModalTitle">Add Faculty Member</h3>
+        <button class="modal-close-btn" onclick="closeModal('facultyModal')">×</button>
+      </div>
+      <div class="modal-body">
+        <form id="facultyForm" onsubmit="saveFaculty(event)">
+          <input type="hidden" id="facultyId">
+          <div class="form-group">
+            <label>Faculty Full Name *</label>
+            <input type="text" id="facultyName" class="form-control" placeholder="e.g. Dr. Rajesh Verma" required>
+          </div>
+          <div class="form-group">
+            <label>Department *</label>
+            <select id="facultyDept" class="form-control" required>
+              <option value="CSE">Computer Science & Engineering (CSE)</option>
+              <option value="ECE">Electronics & Communication (ECE)</option>
+              <option value="EE">Electrical Engineering (EE)</option>
+              <option value="ME">Mechanical Engineering (ME)</option>
+              <option value="CE">Civil Engineering (CE)</option>
+              <option value="Maths">Mathematics & Basic Sciences</option>
+              <option value="Humanities">Management & Humanities</option>
+            </select>
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn btn-secondary" onclick="closeModal('facultyModal')">Cancel</button>
+            <button type="submit" class="btn btn-primary">Save Faculty</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Subject Modal -->
+  <div class="modal-overlay" id="subjectModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="subjectModalTitle">Add Course / Subject</h3>
+        <button class="modal-close-btn" onclick="closeModal('subjectModal')">×</button>
+      </div>
+      <div class="modal-body">
+        <form id="subjectForm" onsubmit="saveSubject(event)">
+          <input type="hidden" id="subjectId">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Subject Code *</label>
+              <input type="text" id="subjectCode" class="form-control" placeholder="e.g. CS201" required>
+            </div>
+            <div class="form-group">
+              <label>Subject Type *</label>
+              <select id="subjectType" class="form-control" required>
+                <option value="Lecture">Lecture</option>
+                <option value="Lab">Lab (Practical)</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Subject Name *</label>
+            <input type="text" id="subjectName" class="form-control" placeholder="e.g. Algorithms Design & Analysis" required>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Assigned Faculty</label>
+              <select id="subjectFaculty" class="form-control"></select>
+            </div>
+            <div class="form-group">
+              <label>Weekly Hours *</label>
+              <input type="number" id="subjectHours" class="form-control" min="1" max="10" value="3" required>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn btn-secondary" onclick="closeModal('subjectModal')">Cancel</button>
+            <button type="submit" class="btn btn-primary">Save Subject</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Room Modal -->
+  <div class="modal-overlay" id="roomModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="roomModalTitle">Add Room / Laboratory</h3>
+        <button class="modal-close-btn" onclick="closeModal('roomModal')">×</button>
+      </div>
+      <div class="modal-body">
+        <form id="roomForm" onsubmit="saveRoom(event)">
+          <input type="hidden" id="roomId">
+          <div class="form-group">
+            <label>Room Name / Number *</label>
+            <input type="text" id="roomName" class="form-control" placeholder="e.g. CSE-204 or AI-Lab" required>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Room Type *</label>
+              <select id="roomType" class="form-control" required>
+                <option value="Classroom">Classroom</option>
+                <option value="Lab">Lab</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Seating Capacity *</label>
+              <input type="number" id="roomCapacity" class="form-control" min="10" max="300" value="60" required>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn btn-secondary" onclick="closeModal('roomModal')">Cancel</button>
+            <button type="submit" class="btn btn-primary">Save Room</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section Modal -->
+  <div class="modal-overlay" id="sectionModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="sectionModalTitle">Add Section / Cohort</h3>
+        <button class="modal-close-btn" onclick="closeModal('sectionModal')">×</button>
+      </div>
+      <div class="modal-body">
+        <form id="sectionForm" onsubmit="saveSection(event)">
+          <input type="hidden" id="sectionId">
+          <div class="form-group">
+            <label>Section Name *</label>
+            <input type="text" id="sectionName" class="form-control" placeholder="e.g. CSE-A, ECE-B" required>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Semester / Year *</label>
+              <input type="text" id="sectionSemester" class="form-control" placeholder="e.g. 3rd Sem" value="3rd" required>
+            </div>
+            <div class="form-group">
+              <label>Number of Students *</label>
+              <input type="number" id="sectionStudents" class="form-control" min="1" max="250" value="50" required>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn btn-secondary" onclick="closeModal('sectionModal')">Cancel</button>
+            <button type="submit" class="btn btn-primary">Save Section</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Timetable Entry Manual Add/Edit Modal -->
+  <div class="modal-overlay" id="entryModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="entryModalTitle">Edit Timetable Class</h3>
+        <button class="modal-close-btn" onclick="closeModal('entryModal')">×</button>
+      </div>
+      <div class="modal-body">
+        <form id="entryForm" onsubmit="saveEntry(event)">
+          <input type="hidden" id="entryId">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Day *</label>
+              <select id="entryDay" class="form-control" required></select>
+            </div>
+            <div class="form-group">
+              <label>Time Slot *</label>
+              <select id="entrySlot" class="form-control" required></select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Section *</label>
+            <select id="entrySection" class="form-control" required></select>
+          </div>
+          <div class="form-group">
+            <label>Subject *</label>
+            <select id="entrySubject" class="form-control" onchange="onEntrySubjectChange()" required></select>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Faculty *</label>
+              <select id="entryFaculty" class="form-control"></select>
+            </div>
+            <div class="form-group">
+              <label>Room / Lab *</label>
+              <select id="entryRoom" class="form-control" required></select>
+            </div>
+          </div>
+
+          <div id="entryConflictAlert" style="display:none; padding:10px 14px; background:#fef2f2; border:1px solid #fecaca; border-radius:8px; color:#b91c1c; font-size:12px; margin-top:10px;">
+          </div>
+
+          <div class="form-actions" style="justify-content:space-between;">
+            <button type="button" class="btn btn-danger" id="entryDeleteBtn" onclick="deleteEntry()" style="display:none;">🗑 Delete Class</button>
+            <div style="display:flex; gap:10px; margin-left:auto;">
+              <button type="button" class="btn btn-secondary" onclick="closeModal('entryModal')">Cancel</button>
+              <button type="submit" class="btn btn-primary" id="entrySaveBtn">Save Class</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Schedule Config Modal -->
+  <div class="modal-overlay" id="configModal">
+    <div class="modal-content" style="max-width: 580px;">
+      <div class="modal-header">
+        <h3>Configure Working Days & Time Slots</h3>
+        <button class="modal-close-btn" onclick="closeModal('configModal')">×</button>
+      </div>
+      <div class="modal-body">
+        <form id="configForm" onsubmit="saveScheduleConfig(event)">
+          <div class="form-group">
+            <label>Active Working Days (comma-separated)</label>
+            <input type="text" id="configDaysInput" class="form-control" value="Monday, Tuesday, Wednesday, Thursday, Friday" required>
+            <small style="color:#64748b; font-size:11px;">Example: Monday, Tuesday, Wednesday, Thursday, Friday, Saturday</small>
+          </div>
+
+          <div class="form-group" style="margin-top:18px;">
+            <label>Time Slots</label>
+            <div id="slotsConfigList" style="display:flex; flex-direction:column; gap:8px;"></div>
+            <button type="button" class="btn btn-sm btn-secondary" onclick="addSlotRow()" style="margin-top:8px;">+ Add Slot</button>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-secondary" onclick="closeModal('configModal')">Cancel</button>
+            <button type="submit" class="btn btn-primary">Save Settings</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Application Script -->
+  <script src="app.js"></script>
 </body>
 </html>
